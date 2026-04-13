@@ -13,7 +13,7 @@ const trip = {
     name: 'Madeira',
     country: 'Portugal',
     tagline: 'The Pearl of the Atlantic',
-    heroImage: require('./assets/hero.jpg'),   // 16:9 landscape
+    heroImage: 'https://images.unsplash.com/photo-1510739628590-0c601822e0a0?w=1200&q=80',
     flag: '🇵🇹',
   },
 

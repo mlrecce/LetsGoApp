@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Linking,
   Alert,
+  Image,
 } from 'react-native';
 import { useTripPlan, TIME_SLOTS } from '../context/TripPlanContext';
 import { trip } from '../content/active';
@@ -63,6 +64,32 @@ const DetailScreen = ({ route }) => {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+      {/* Hero Image */}
+      {item.heroPhoto && (
+        <Image
+          source={{ uri: item.heroPhoto }}
+          style={styles.heroImage}
+        />
+      )}
+
+      {/* Photos Gallery */}
+      {item.photos && item.photos.length > 0 && (
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.photosGallery}
+          contentContainerStyle={styles.photosGalleryContent}
+        >
+          {item.photos.map((photo, i) => (
+            <Image
+              key={i}
+              source={{ uri: photo }}
+              style={styles.thumbnailImage}
+            />
+          ))}
+        </ScrollView>
+      )}
+
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.name}>{item.name}</Text>
@@ -248,56 +275,60 @@ const DetailScreen = ({ route }) => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f5f5f5' },
+  container: { flex: 1, backgroundColor: '#1a1f2e' },
   content: { paddingBottom: 40 },
+  heroImage: { width: '100%', height: 250 },
+  photosGallery: { marginTop: 0 },
+  photosGalleryContent: { paddingHorizontal: 16, gap: 8, paddingVertical: 12 },
+  thumbnailImage: { width: 120, height: 120, borderRadius: 8 },
   header: { padding: 20, paddingTop: 16 },
-  name: { fontSize: 26, fontWeight: '800', color: '#1a1a1a' },
-  categoryBadge: { backgroundColor: '#e8f0fe', borderRadius: 12, paddingHorizontal: 10, paddingVertical: 4, alignSelf: 'flex-start', marginTop: 8 },
-  categoryText: { fontSize: 13, color: '#1a73e8', fontWeight: '600' },
+  name: { fontSize: 26, fontWeight: '800', color: '#ffffff' },
+  categoryBadge: { backgroundColor: 'rgba(66,133,244,0.25)', borderRadius: 12, paddingHorizontal: 10, paddingVertical: 4, alignSelf: 'flex-start', marginTop: 8 },
+  categoryText: { fontSize: 13, color: '#7abaff', fontWeight: '600' },
 
-  selectedBanner: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: '#e6f4ea', marginHorizontal: 20, padding: 12, borderRadius: 10 },
-  selectedText: { color: '#137333', fontWeight: '600', fontSize: 14 },
-  removeText: { color: '#d93025', fontWeight: '600', fontSize: 14 },
+  selectedBanner: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: 'rgba(52,168,83,0.2)', marginHorizontal: 20, padding: 12, borderRadius: 10, borderWidth: 1, borderColor: 'rgba(52,168,83,0.3)' },
+  selectedText: { color: '#81c995', fontWeight: '600', fontSize: 14 },
+  removeText: { color: '#f28b82', fontWeight: '600', fontSize: 14 },
 
-  description: { fontSize: 16, lineHeight: 24, color: '#333', paddingHorizontal: 20, marginTop: 8 },
+  description: { fontSize: 16, lineHeight: 24, color: 'rgba(255,255,255,0.75)', paddingHorizontal: 20, marginTop: 8 },
 
   infoGrid: { flexDirection: 'row', flexWrap: 'wrap', paddingHorizontal: 20, marginTop: 20, gap: 12 },
-  infoItem: { flexDirection: 'row', alignItems: 'flex-start', width: '47%', backgroundColor: '#fff', borderRadius: 10, padding: 10 },
+  infoItem: { flexDirection: 'row', alignItems: 'flex-start', width: '47%', backgroundColor: 'rgba(255,255,255,0.08)', borderRadius: 10, padding: 10, borderWidth: 1, borderColor: 'rgba(255,255,255,0.1)' },
   infoIcon: { fontSize: 20, marginRight: 8, marginTop: 2 },
-  infoLabel: { fontSize: 11, color: '#999', fontWeight: '600', textTransform: 'uppercase' },
-  infoValue: { fontSize: 13, color: '#333', marginTop: 2 },
+  infoLabel: { fontSize: 11, color: 'rgba(255,255,255,0.5)', fontWeight: '600', textTransform: 'uppercase' },
+  infoValue: { fontSize: 13, color: 'rgba(255,255,255,0.85)', marginTop: 2 },
 
   actions: { flexDirection: 'row', paddingHorizontal: 20, marginTop: 20, gap: 12 },
-  actionButton: { flex: 1, backgroundColor: '#fff', borderRadius: 12, padding: 12, alignItems: 'center', shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.06, shadowRadius: 4, elevation: 1 },
+  actionButton: { flex: 1, backgroundColor: 'rgba(255,255,255,0.10)', borderRadius: 12, padding: 12, alignItems: 'center', borderWidth: 1, borderColor: 'rgba(255,255,255,0.12)' },
   actionIcon: { fontSize: 24 },
-  actionLabel: { fontSize: 12, color: '#666', marginTop: 4, fontWeight: '600' },
+  actionLabel: { fontSize: 12, color: 'rgba(255,255,255,0.65)', marginTop: 4, fontWeight: '600' },
 
   addressRow: { flexDirection: 'row', alignItems: 'flex-start', paddingHorizontal: 20, marginTop: 16 },
   addressIcon: { fontSize: 16, marginRight: 6, marginTop: 1 },
-  addressText: { fontSize: 14, color: '#1a73e8', flex: 1, lineHeight: 20 },
+  addressText: { fontSize: 14, color: '#7abaff', flex: 1, lineHeight: 20 },
 
   tipsSection: { paddingHorizontal: 20, marginTop: 24 },
-  sectionTitle: { fontSize: 18, fontWeight: '700', color: '#1a1a1a', marginBottom: 10 },
+  sectionTitle: { fontSize: 18, fontWeight: '700', color: '#ffffff', marginBottom: 10 },
   tipRow: { flexDirection: 'row', marginBottom: 8, alignItems: 'flex-start' },
   tipBullet: { fontSize: 14, marginRight: 8, marginTop: 1 },
-  tipText: { fontSize: 14, color: '#444', lineHeight: 20, flex: 1 },
+  tipText: { fontSize: 14, color: 'rgba(255,255,255,0.7)', lineHeight: 20, flex: 1 },
 
   chipRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
-  chip: { backgroundColor: '#e8f0fe', borderRadius: 12, paddingHorizontal: 10, paddingVertical: 4 },
-  chipText: { fontSize: 12, color: '#1a73e8', fontWeight: '600' },
+  chip: { backgroundColor: 'rgba(66,133,244,0.25)', borderRadius: 12, paddingHorizontal: 10, paddingVertical: 4 },
+  chipText: { fontSize: 12, color: '#7abaff', fontWeight: '600' },
 
   addButton: { backgroundColor: '#1a73e8', marginHorizontal: 20, marginTop: 28, padding: 16, borderRadius: 14, alignItems: 'center' },
-  addButtonSelected: { backgroundColor: '#fff', borderWidth: 2, borderColor: '#1a73e8' },
+  addButtonSelected: { backgroundColor: 'transparent', borderWidth: 2, borderColor: '#4da6ff' },
   addButtonText: { color: '#fff', fontSize: 17, fontWeight: '700' },
-  addButtonTextSelected: { color: '#1a73e8' },
+  addButtonTextSelected: { color: '#4da6ff' },
 
   dayPicker: { marginHorizontal: 20, marginTop: 12 },
-  dayOption: { backgroundColor: '#fff', borderRadius: 10, padding: 14, marginBottom: 8, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderWidth: 1, borderColor: '#eee' },
-  dayOptionSelected: { borderColor: '#1a73e8', backgroundColor: '#e8f0fe' },
+  dayOption: { backgroundColor: 'rgba(255,255,255,0.08)', borderRadius: 10, padding: 14, marginBottom: 8, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderWidth: 1, borderColor: 'rgba(255,255,255,0.12)' },
+  dayOptionSelected: { borderColor: '#4da6ff', backgroundColor: 'rgba(26,115,232,0.2)' },
   dayOptionLeft: { flex: 1 },
-  dayOptionNumber: { fontSize: 15, fontWeight: '700', color: '#1a1a1a' },
-  dayOptionDate: { fontSize: 12, color: '#666', marginTop: 2 },
-  dayOptionTitle: { fontSize: 12, color: '#999', marginTop: 2 },
+  dayOptionNumber: { fontSize: 15, fontWeight: '700', color: '#ffffff' },
+  dayOptionDate: { fontSize: 12, color: 'rgba(255,255,255,0.55)', marginTop: 2 },
+  dayOptionTitle: { fontSize: 12, color: 'rgba(255,255,255,0.4)', marginTop: 2 },
   dayCountBadge: { backgroundColor: '#1a73e8', borderRadius: 12, width: 24, height: 24, justifyContent: 'center', alignItems: 'center' },
   dayCountText: { color: '#fff', fontSize: 12, fontWeight: '700' },
 });

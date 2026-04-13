@@ -84,17 +84,17 @@ const AskClaudeScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f5f5f5' },
+  container: { flex: 1, backgroundColor: '#1a1f2e' },
   messages: { flex: 1 },
   messagesList: { padding: 16, paddingBottom: 8 },
   bubble: { borderRadius: 16, padding: 12, marginBottom: 10, maxWidth: '85%' },
   userBubble: { backgroundColor: '#1a73e8', alignSelf: 'flex-end' },
-  assistantBubble: { backgroundColor: '#fff', alignSelf: 'flex-start', shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.06, shadowRadius: 4, elevation: 1 },
+  assistantBubble: { backgroundColor: 'rgba(255,255,255,0.10)', alignSelf: 'flex-start', borderWidth: 1, borderColor: 'rgba(255,255,255,0.12)' },
   bubbleText: { fontSize: 15, lineHeight: 21 },
   userText: { color: '#fff' },
-  assistantText: { color: '#1a1a1a' },
-  inputRow: { flexDirection: 'row', padding: 12, backgroundColor: '#fff', borderTopWidth: 1, borderTopColor: '#eee' },
-  input: { flex: 1, backgroundColor: '#f0f0f0', borderRadius: 20, paddingHorizontal: 16, paddingVertical: 10, fontSize: 15, color: '#1a1a1a' },
+  assistantText: { color: 'rgba(255,255,255,0.85)' },
+  inputRow: { flexDirection: 'row', padding: 12, backgroundColor: '#141824', borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,0.1)' },
+  input: { flex: 1, backgroundColor: 'rgba(255,255,255,0.08)', borderRadius: 20, paddingHorizontal: 16, paddingVertical: 10, fontSize: 15, color: '#ffffff', borderWidth: 1, borderColor: 'rgba(255,255,255,0.12)' },
   sendButton: { backgroundColor: '#1a73e8', borderRadius: 20, paddingHorizontal: 20, justifyContent: 'center', marginLeft: 8 },
   sendText: { color: '#fff', fontWeight: '700', fontSize: 15 },
 });

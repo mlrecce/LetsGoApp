@@ -1,4 +1,33 @@
 {
-  "name": "LetsGoApp",
-  "displayName": "LetsGoApp"
+  "expo": {
+    "name": "LetsGoApp",
+    "slug": "letsgoapp",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": true,
+    "splash": {
+      "backgroundColor": "#1a1f2e"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.mlrecce.letsgoapp"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#1a73e8"
+      },
+      "package": "com.mlrecce.letsgoapp"
+    },
+    "extra": {
+      "eas": {
+        "projectId": ""
+      }
+    },
+    "plugins": [
+      "expo-asset",
+      "expo-font"
+    ]
+  }
 }

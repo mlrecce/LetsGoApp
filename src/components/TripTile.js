@@ -17,16 +17,13 @@ const TripTile = ({ icon, title, subtitle, onPress, color = '#1a73e8' }) => {
 
 const styles = StyleSheet.create({
   tile: {
-    backgroundColor: '#fff',
+    backgroundColor: 'rgba(255,255,255,0.12)',
     borderRadius: 16,
     padding: 16,
     width: '47%',
     marginBottom: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 3,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.15)',
   },
   icon: {
     fontSize: 28,
@@ -35,12 +32,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#1a1a1a',
+    color: '#ffffff',
     marginBottom: 2,
   },
   subtitle: {
     fontSize: 12,
-    color: '#666',
+    color: 'rgba(255,255,255,0.65)',
     lineHeight: 16,
   },
 });
