@@ -1,28 +1,34 @@
 import React from 'react';
 import { FlatList, StyleSheet, Text } from 'react-native';
 import { activities } from '../content/active';
+import { useTripPlan } from '../context/TripPlanContext';
 import ContentCard from '../components/ContentCard';
 
-const ActivitiesScreen = () => {
+const ActivitiesScreen = ({ navigation }) => {
+  const plan = useTripPlan();
+
+  const getDayLabel = (itemId) => {
+    const date = plan.getSelectedDay(itemId);
+    if (!date) return null;
+    return plan.tripDates.indexOf(date) + 1;
+  };
+
   return (
     <FlatList
       style={styles.container}
       data={activities}
       keyExtractor={(item) => item.id}
       contentContainerStyle={styles.list}
-      ListHeaderComponent={
-        <Text style={styles.header}>Things to Do</Text>
-      }
+      ListHeaderComponent={<Text style={styles.header}>Things to Do</Text>}
       renderItem={({ item }) => (
         <ContentCard
           title={item.name}
           description={item.description}
-          chips={[
-            item.category,
-            item.difficulty,
-            item.duration,
-            item.estimatedCost,
-          ].filter(Boolean)}
+          chips={[item.category, item.difficulty].filter(Boolean)}
+          costEstimate={item.costEstimate}
+          hours={item.duration}
+          selectedDay={getDayLabel(item.id)}
+          onPress={() => navigation.navigate('Detail', { item })}
         />
       )}
     />

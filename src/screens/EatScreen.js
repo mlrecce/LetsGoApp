@@ -1,10 +1,10 @@
 import React from 'react';
 import { FlatList, StyleSheet, Text } from 'react-native';
-import { sleep } from '../content/active';
+import { eat } from '../content/active';
 import { useTripPlan } from '../context/TripPlanContext';
 import ContentCard from '../components/ContentCard';
 
-const SleepScreen = ({ navigation }) => {
+const EatScreen = ({ navigation }) => {
   const plan = useTripPlan();
 
   const getDayLabel = (itemId) => {
@@ -16,15 +16,15 @@ const SleepScreen = ({ navigation }) => {
   return (
     <FlatList
       style={styles.container}
-      data={sleep}
+      data={eat}
       keyExtractor={(item) => item.id}
       contentContainerStyle={styles.list}
-      ListHeaderComponent={<Text style={styles.header}>Places to Stay</Text>}
+      ListHeaderComponent={<Text style={styles.header}>Places to Eat</Text>}
       renderItem={({ item }) => (
         <ContentCard
-          title={`${item.name}${item.isBooked ? '  ✓ Booked' : ''}`}
+          title={item.name}
           description={item.description}
-          chips={[item.category, ...item.amenities.slice(0, 3)]}
+          chips={[item.category, item.costEstimate]}
           costEstimate={item.costEstimate}
           hours={item.hours}
           selectedDay={getDayLabel(item.id)}
@@ -41,4 +41,4 @@ const styles = StyleSheet.create({
   header: { fontSize: 24, fontWeight: '800', color: '#1a1a1a', marginHorizontal: 16, marginBottom: 16 },
 });
 
-export default SleepScreen;
+export default EatScreen;
