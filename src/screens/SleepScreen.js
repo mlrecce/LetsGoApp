@@ -29,7 +29,7 @@ const SleepScreen = ({ navigation }) => {
       ListHeaderComponent={
         <>
           <Text style={styles.header}>Places to Stay</Text>
-          <CityMapSelector selected={city} onSelect={setCity} />
+          <CityMapSelector data={sleep} pinColor="#9334E6" selected={city} onSelect={setCity} />
         </>
       }
       renderItem={({ item }) => (

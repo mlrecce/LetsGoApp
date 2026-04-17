@@ -29,7 +29,7 @@ const EatScreen = ({ navigation }) => {
       ListHeaderComponent={
         <>
           <Text style={styles.header}>Places to Eat</Text>
-          <CityMapSelector selected={city} onSelect={setCity} />
+          <CityMapSelector data={eat} pinColor="#FBBC04" selected={city} onSelect={setCity} />
         </>
       }
       renderItem={({ item }) => (

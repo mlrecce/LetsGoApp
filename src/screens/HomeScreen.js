@@ -12,17 +12,18 @@ const dayImages = [
   'https://images.unsplash.com/photo-1555993539-1732b0258235?w=900&q=70',  // Parthenon
   'https://images.unsplash.com/photo-1603565816030-6b389eeb23cb?w=900&q=70', // Athens cityscape
   'https://images.unsplash.com/photo-1594048234320-f2caf3dac5c0?w=900&q=70', // Delphi
-  // Nafplio / Peloponnese (days 5-9)
+  // Nafplio / Peloponnese (days 5-8)
   'https://images.unsplash.com/photo-1751060867787-3d28ea3d6e22?w=900&q=70', // Nafplio
   'https://images.unsplash.com/photo-1588250977873-b15f82d8176f?w=900&q=70', // Mycenae / Epidaurus
   'https://images.unsplash.com/photo-1602348143971-0c5c97d23367?w=900&q=70', // Olympia
   'https://images.unsplash.com/photo-1728454978463-31b0233e41c2?w=900&q=70', // Palamidi
-  'https://images.unsplash.com/photo-1537649019808-a87dc561d0cc?w=900&q=70', // Peloponnese coast
-  // Santorini (days 10-14)
+  // Crete (days 9-11)
+  'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=900&q=70',   // Heraklion harbor
+  'https://images.unsplash.com/photo-1570303345338-e1f0eddf4946?w=900&q=70', // Knossos Palace
+  'https://images.unsplash.com/photo-1504512485720-7d83a16ee930?w=900&q=70', // Crete beach
+  // Santorini (days 12-14)
   'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=900&q=70', // Oia blue domes
-  'https://images.unsplash.com/photo-1545006547-eee2b9beddff?w=900&q=70',   // Caldera sunset
   'https://images.unsplash.com/photo-1544327404-f6aed3d39dbf?w=900&q=70',   // Akrotiri / Red Beach
-  'https://images.unsplash.com/photo-1652179326115-943d168c4cb2?w=900&q=70', // Volcano boat
   'https://images.unsplash.com/photo-1690324075771-f8b43b7b1bbc?w=900&q=70', // Santorini farewell
 ];
 
@@ -65,6 +66,11 @@ const buildMapHTML = () => {
     `L.circleMarker([${p.lat},${p.lng}],{radius:7,fillColor:'${p.color}',color:'#fff',weight:2,fillOpacity:0.9}).addTo(map).bindPopup('<b>${p.name.replace(/'/g, "\\'")}</b><br/><span style="color:${p.color}">${p.tab}</span>');`
   ).join('\n');
 
+  // Compute bounds from all pins so the map auto-fits any destination
+  const boundsJS = pins.length > 0
+    ? `map.fitBounds([${pins.map(p => `[${p.lat},${p.lng}]`).join(',')}],{padding:[30,30]});`
+    : '';
+
   return `<!DOCTYPE html>
 <html><head>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
@@ -82,6 +88,7 @@ const buildMapHTML = () => {
   var map=L.map('map',{zoomControl:true,attributionControl:false}).setView([37.2,24.0],7);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18}).addTo(map);
   ${markersJS}
+  ${boundsJS}
 </script>
 </body></html>`;
 };
@@ -169,7 +176,7 @@ const HomeScreen = ({ navigation }) => {
       </View>
 
       {/* Zoomable Map */}
-      <Text style={styles.sectionTitle}>Explore Madeira</Text>
+      <Text style={styles.sectionTitle}>Explore {destination.name}</Text>
       <View style={styles.mapContainer}>
         <WebView
           style={styles.map}

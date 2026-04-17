@@ -29,7 +29,7 @@ const ActivitiesScreen = ({ navigation }) => {
       ListHeaderComponent={
         <>
           <Text style={styles.header}>Things to Do</Text>
-          <CityMapSelector selected={city} onSelect={setCity} />
+          <CityMapSelector data={activities} pinColor="#EA4335" selected={city} onSelect={setCity} />
         </>
       }
       renderItem={({ item }) => (

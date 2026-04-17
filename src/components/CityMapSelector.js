@@ -1,42 +1,73 @@
 import React, { useRef, useCallback } from 'react';
-import { View, ScrollView, TouchableOpacity, Text, StyleSheet, Platform } from 'react-native';
+import { View, ScrollView, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { WebView } from 'react-native-webview';
 
 /**
- * City selector with an interactive Leaflet map + pill buttons.
+ * City selector with an interactive Leaflet map showing content pins,
+ * a dashed route line connecting the cities, and pill buttons.
  *
  * Props:
- *   cities      – [{ name, lat, lng, dates }]  (derived from trip.hotels or hardcoded)
- *   selected    – currently selected city name
- *   onSelect    – callback(cityName)
+ *   data       – array of content items (must have `city`, `coordinates`, `name`)
+ *   pinColor   – colour string for content pins (e.g. '#4285F4')
+ *   selected   – currently selected city name
+ *   onSelect   – callback(cityName)
  */
 
 const CITIES = [
   { name: 'Athens',    lat: 37.9755, lng: 23.7348, dates: 'Jun 14–18' },
-  { name: 'Nafplio',   lat: 37.5673, lng: 22.7972, dates: 'Jun 18–23' },
-  { name: 'Santorini', lat: 36.4618, lng: 25.3753, dates: 'Jun 23–28' },
+  { name: 'Nafplio',   lat: 37.5673, lng: 22.7972, dates: 'Jun 18–22' },
+  { name: 'Crete',     lat: 35.3387, lng: 25.1335, dates: 'Jun 22–25' },
+  { name: 'Santorini', lat: 36.4618, lng: 25.3753, dates: 'Jun 25–28' },
 ];
 
-const buildMapHTML = (selected) => {
-  const markers = CITIES.map((c) => {
+const buildMapHTML = (selected, data, pinColor) => {
+  // --- Route line connecting the three cities ---
+  const routeLine = `L.polyline([${CITIES.map(c => `[${c.lat},${c.lng}]`).join(',')}],{
+    color:'rgba(77,166,255,0.45)',weight:2,dashArray:'6,8'
+  }).addTo(map);`;
+
+  // --- City label markers (clickable) ---
+  const cityMarkers = CITIES.map((c) => {
     const isActive = c.name === selected;
-    const color = isActive ? '#4da6ff' : 'rgba(255,255,255,0.6)';
-    const radius = isActive ? 10 : 7;
-    const fillOpacity = isActive ? 1 : 0.5;
     return `
       L.circleMarker([${c.lat},${c.lng}],{
-        radius:${radius},fillColor:'${color}',color:'#fff',weight:2,fillOpacity:${fillOpacity}
+        radius:${isActive ? 10 : 7},
+        fillColor:'${isActive ? '#4da6ff' : 'rgba(255,255,255,0.5)'}',
+        color:'#fff',weight:2,
+        fillOpacity:${isActive ? 1 : 0.4}
       }).addTo(map)
-        .bindTooltip('${c.name}',{permanent:true,direction:'top',offset:[0,-10],
+        .bindTooltip('${c.name}',{permanent:true,direction:'top',offset:[0,-12],
           className:'city-label${isActive ? ' active' : ''}'})
         .on('click',function(){window.ReactNativeWebView.postMessage('${c.name}')});
     `;
   }).join('\n');
 
-  // Draw route line connecting the cities
-  const routeLine = `L.polyline([${CITIES.map(c => `[${c.lat},${c.lng}]`).join(',')}],{
-    color:'rgba(77,166,255,0.5)',weight:2,dashArray:'6,8'
-  }).addTo(map);`;
+  // --- Content pins from the tab data ---
+  const contentPins = (data || [])
+    .filter((item) => item.coordinates && item.coordinates.lat && item.coordinates.lng)
+    .map((item) => {
+      const isActive = item.city === selected;
+      const opacity = isActive ? 0.9 : 0.15;
+      const radius = isActive ? 6 : 4;
+      const safeName = (item.name || '').replace(/'/g, "\\'");
+      return `L.circleMarker([${item.coordinates.lat},${item.coordinates.lng}],{
+        radius:${radius},fillColor:'${pinColor}',color:'${isActive ? '#fff' : 'rgba(255,255,255,0.3)'}',
+        weight:${isActive ? 1.5 : 0.5},fillOpacity:${opacity}
+      }).addTo(map)${isActive ? `.bindPopup('<b>${safeName}</b>')` : ''};`;
+    }).join('\n');
+
+  // --- Compute bounds for the selected city's pins ---
+  const selectedPins = (data || []).filter(
+    (item) => item.city === selected && item.coordinates && item.coordinates.lat
+  );
+  const selectedCity = CITIES.find((c) => c.name === selected);
+  let fitBoundsJS = '';
+  if (selectedPins.length > 1) {
+    const coords = selectedPins.map((p) => `[${p.coordinates.lat},${p.coordinates.lng}]`);
+    fitBoundsJS = `map.fitBounds([${coords.join(',')}],{padding:[35,35],maxZoom:13});`;
+  } else if (selectedCity) {
+    fitBoundsJS = `map.setView([${selectedCity.lat},${selectedCity.lng}],12);`;
+  }
 
   return `<!DOCTYPE html>
 <html><head>
@@ -47,29 +78,30 @@ const buildMapHTML = (selected) => {
   html,body{margin:0;padding:0;height:100%;overflow:hidden;background:#1a1f2e}
   #map{width:100%;height:100%}
   .city-label{
-    background:rgba(0,0,0,0.7);color:rgba(255,255,255,0.7);border:none;
-    font-size:12px;font-weight:600;padding:2px 8px;border-radius:10px;
-    box-shadow:none;
+    background:rgba(0,0,0,0.65);color:rgba(255,255,255,0.6);border:none;
+    font-size:11px;font-weight:600;padding:2px 7px;border-radius:10px;box-shadow:none;
   }
   .city-label.active{
-    background:rgba(77,166,255,0.9);color:#fff;font-size:13px;
+    background:rgba(77,166,255,0.9);color:#fff;font-size:12px;padding:3px 9px;
   }
   .leaflet-tile-pane{filter:saturate(0.3) brightness(0.4)}
+  .leaflet-popup-content b{font-size:12px}
 </style>
 </head><body>
 <div id="map"></div>
 <script>
-  var map=L.map('map',{zoomControl:false,attributionControl:false,dragging:false,
-    scrollWheelZoom:false,doubleClickZoom:false,touchZoom:false,boxZoom:false})
+  var map=L.map('map',{zoomControl:false,attributionControl:false})
     .setView([37.2,24.0],7);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18}).addTo(map);
   ${routeLine}
-  ${markers}
+  ${contentPins}
+  ${cityMarkers}
+  ${fitBoundsJS}
 <\/script>
 </body></html>`;
 };
 
-const CityMapSelector = ({ selected = 'Athens', onSelect }) => {
+const CityMapSelector = ({ data = [], pinColor = '#4da6ff', selected = 'Athens', onSelect }) => {
   const webViewRef = useRef(null);
 
   const handleMessage = useCallback((event) => {
@@ -86,7 +118,7 @@ const CityMapSelector = ({ selected = 'Athens', onSelect }) => {
         <WebView
           ref={webViewRef}
           key={selected}
-          source={{ html: buildMapHTML(selected) }}
+          source={{ html: buildMapHTML(selected, data, pinColor) }}
           style={styles.map}
           scrollEnabled={false}
           onMessage={handleMessage}
@@ -103,6 +135,7 @@ const CityMapSelector = ({ selected = 'Athens', onSelect }) => {
       >
         {CITIES.map((c) => {
           const active = c.name === selected;
+          const count = data.filter((i) => i.city === c.name).length;
           return (
             <TouchableOpacity
               key={c.name}
@@ -111,7 +144,9 @@ const CityMapSelector = ({ selected = 'Athens', onSelect }) => {
               activeOpacity={0.7}
             >
               <Text style={[styles.pillName, active && styles.pillNameActive]}>{c.name}</Text>
-              <Text style={[styles.pillDates, active && styles.pillDatesActive]}>{c.dates}</Text>
+              <Text style={[styles.pillDates, active && styles.pillDatesActive]}>
+                {c.dates} · {count}
+              </Text>
             </TouchableOpacity>
           );
         })}
@@ -125,7 +160,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   mapContainer: {
-    height: 180,
+    height: 200,
     marginHorizontal: 16,
     borderRadius: 14,
     overflow: 'hidden',
@@ -142,6 +177,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   pill: {
+    flex: 1,
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,

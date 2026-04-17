@@ -29,7 +29,7 @@ const ShopScreen = ({ navigation }) => {
       ListHeaderComponent={
         <>
           <Text style={styles.header}>Things to Buy</Text>
-          <CityMapSelector selected={city} onSelect={setCity} />
+          <CityMapSelector data={shop} pinColor="#34A853" selected={city} onSelect={setCity} />
         </>
       }
       renderItem={({ item }) => (

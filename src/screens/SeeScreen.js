@@ -29,7 +29,7 @@ const SeeScreen = ({ navigation }) => {
       ListHeaderComponent={
         <>
           <Text style={styles.header}>Things to See</Text>
-          <CityMapSelector selected={city} onSelect={setCity} />
+          <CityMapSelector data={see} pinColor="#4285F4" selected={city} onSelect={setCity} />
         </>
       }
       renderItem={({ item }) => (
