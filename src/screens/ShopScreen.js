@@ -1,11 +1,18 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { FlatList, StyleSheet, Text } from 'react-native';
 import { shop } from '../content/active';
 import { useTripPlan } from '../context/TripPlanContext';
 import ContentCard from '../components/ContentCard';
+import CityMapSelector from '../components/CityMapSelector';
 
 const ShopScreen = ({ navigation }) => {
   const plan = useTripPlan();
+  const [city, setCity] = useState('Athens');
+
+  const filtered = useMemo(
+    () => shop.filter((i) => i.city === city),
+    [city],
+  );
 
   const getDayLabel = (itemId) => {
     const date = plan.getSelectedDay(itemId);
@@ -16,10 +23,15 @@ const ShopScreen = ({ navigation }) => {
   return (
     <FlatList
       style={styles.container}
-      data={shop}
+      data={filtered}
       keyExtractor={(item) => item.id}
       contentContainerStyle={styles.list}
-      ListHeaderComponent={<Text style={styles.header}>Things to Buy</Text>}
+      ListHeaderComponent={
+        <>
+          <Text style={styles.header}>Things to Buy</Text>
+          <CityMapSelector selected={city} onSelect={setCity} />
+        </>
+      }
       renderItem={({ item }) => (
         <ContentCard
           title={item.name}
@@ -39,7 +51,7 @@ const ShopScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#1a1f2e' },
   list: { paddingTop: 16, paddingBottom: 32 },
-  header: { fontSize: 24, fontWeight: '800', color: '#ffffff', marginHorizontal: 16, marginBottom: 16 },
+  header: { fontSize: 24, fontWeight: '800', color: '#ffffff', marginHorizontal: 16, marginBottom: 12 },
 });
 
 export default ShopScreen;

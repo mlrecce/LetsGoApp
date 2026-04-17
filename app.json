@@ -12,7 +12,10 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.mlrecce.letsgoapp"
+      "bundleIdentifier": "com.mlrecce.letsgoapp",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -22,12 +25,13 @@
     },
     "extra": {
       "eas": {
-        "projectId": ""
+        "projectId": "59adc59c-4d5e-427a-86ba-a1aa93b32411"
       }
     },
     "plugins": [
       "expo-asset",
       "expo-font"
-    ]
+    ],
+    "owner": "mlrecce"
   }
 }

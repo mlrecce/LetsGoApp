@@ -5,15 +5,25 @@ import { trip, see, activities, shop, sleep, eat } from '../content/active';
 import { useTripPlan } from '../context/TripPlanContext';
 import TripTile from '../components/TripTile';
 
-// One atmospheric Madeira photo per day of the trip
+// One atmospheric Greece photo per day of the trip (14 days)
 const dayImages = [
-  'https://images.unsplash.com/photo-1672446063068-680ca91d7082?w=900&q=70',
-  'https://images.unsplash.com/photo-1721241843813-c54b77496005?w=900&q=70',
-  'https://images.unsplash.com/photo-1609870445811-7446dbae8b94?w=900&q=70',
-  'https://images.unsplash.com/photo-1721241843748-24202060eb45?w=900&q=70',
-  'https://images.unsplash.com/photo-1725992245371-a822cff4e2d0?w=900&q=70',
-  'https://images.unsplash.com/photo-1689349666953-e8d81553fda2?w=900&q=70',
-  'https://images.unsplash.com/photo-1674333362725-84e9996aa6fb?w=900&q=70',
+  // Athens (days 1-4)
+  'https://images.unsplash.com/photo-1503152394-c571994fd383?w=900&q=70',  // Acropolis overview
+  'https://images.unsplash.com/photo-1555993539-1732b0258235?w=900&q=70',  // Parthenon
+  'https://images.unsplash.com/photo-1603565816030-6b389eeb23cb?w=900&q=70', // Athens cityscape
+  'https://images.unsplash.com/photo-1594048234320-f2caf3dac5c0?w=900&q=70', // Delphi
+  // Nafplio / Peloponnese (days 5-9)
+  'https://images.unsplash.com/photo-1751060867787-3d28ea3d6e22?w=900&q=70', // Nafplio
+  'https://images.unsplash.com/photo-1588250977873-b15f82d8176f?w=900&q=70', // Mycenae / Epidaurus
+  'https://images.unsplash.com/photo-1602348143971-0c5c97d23367?w=900&q=70', // Olympia
+  'https://images.unsplash.com/photo-1728454978463-31b0233e41c2?w=900&q=70', // Palamidi
+  'https://images.unsplash.com/photo-1537649019808-a87dc561d0cc?w=900&q=70', // Peloponnese coast
+  // Santorini (days 10-14)
+  'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=900&q=70', // Oia blue domes
+  'https://images.unsplash.com/photo-1545006547-eee2b9beddff?w=900&q=70',   // Caldera sunset
+  'https://images.unsplash.com/photo-1544327404-f6aed3d39dbf?w=900&q=70',   // Akrotiri / Red Beach
+  'https://images.unsplash.com/photo-1652179326115-943d168c4cb2?w=900&q=70', // Volcano boat
+  'https://images.unsplash.com/photo-1690324075771-f8b43b7b1bbc?w=900&q=70', // Santorini farewell
 ];
 
 /**
@@ -69,7 +79,7 @@ const buildMapHTML = () => {
 </head><body>
 <div id="map"></div>
 <script>
-  var map=L.map('map',{zoomControl:true,attributionControl:false}).setView([32.735,-16.96],11);
+  var map=L.map('map',{zoomControl:true,attributionControl:false}).setView([37.2,24.0],7);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18}).addTo(map);
   ${markersJS}
 </script>

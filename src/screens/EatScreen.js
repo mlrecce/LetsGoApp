@@ -1,11 +1,18 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { FlatList, StyleSheet, Text } from 'react-native';
 import { eat } from '../content/active';
 import { useTripPlan } from '../context/TripPlanContext';
 import ContentCard from '../components/ContentCard';
+import CityMapSelector from '../components/CityMapSelector';
 
 const EatScreen = ({ navigation }) => {
   const plan = useTripPlan();
+  const [city, setCity] = useState('Athens');
+
+  const filtered = useMemo(
+    () => eat.filter((i) => i.city === city),
+    [city],
+  );
 
   const getDayLabel = (itemId) => {
     const date = plan.getSelectedDay(itemId);
@@ -16,10 +23,15 @@ const EatScreen = ({ navigation }) => {
   return (
     <FlatList
       style={styles.container}
-      data={eat}
+      data={filtered}
       keyExtractor={(item) => item.id}
       contentContainerStyle={styles.list}
-      ListHeaderComponent={<Text style={styles.header}>Places to Eat</Text>}
+      ListHeaderComponent={
+        <>
+          <Text style={styles.header}>Places to Eat</Text>
+          <CityMapSelector selected={city} onSelect={setCity} />
+        </>
+      }
       renderItem={({ item }) => (
         <ContentCard
           title={item.name}
@@ -39,7 +51,7 @@ const EatScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#1a1f2e' },
   list: { paddingTop: 16, paddingBottom: 32 },
-  header: { fontSize: 24, fontWeight: '800', color: '#ffffff', marginHorizontal: 16, marginBottom: 16 },
+  header: { fontSize: 24, fontWeight: '800', color: '#ffffff', marginHorizontal: 16, marginBottom: 12 },
 });
 
 export default EatScreen;
